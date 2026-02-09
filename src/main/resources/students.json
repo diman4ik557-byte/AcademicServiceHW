@@ -1,0 +1,5 @@
+[
+  {"id":1,"name":"Студент Обычный","email":"commonSt@gmail.com"},
+  {"id":2,"name":"Студент Редкий","email":"rareSt@gmail.com"},
+  {"id":3,"name":"Студент Эпический","email":"epicSt@gmail.com"}
+  ]

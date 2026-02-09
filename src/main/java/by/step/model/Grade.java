@@ -1,0 +1,16 @@
+package by.step.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Grade {
+    private int studentId;
+    private int score;
+    private Subject subject;
+}
