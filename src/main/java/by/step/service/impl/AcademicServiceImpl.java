@@ -6,28 +6,21 @@ import by.step.model.Subject;
 import by.step.repository.GradeRepository;
 import by.step.repository.StudentRepository;
 import by.step.service.AcademicService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AcademicServiceImpl implements AcademicService {
 
     private final StudentRepository studentRepository;
     private final GradeRepository gradeRepository;
 
-    @Autowired
-    public AcademicServiceImpl(StudentRepository studentRepository,
-                               GradeRepository gradeRepository){
-        this.studentRepository = studentRepository;
-        this.gradeRepository = gradeRepository;
-    }
-
     @Override
     public void addStudent(Student student) {
         studentRepository.addStudent(student);
-
     }
 
     @Override
