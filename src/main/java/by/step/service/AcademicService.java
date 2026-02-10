@@ -6,6 +6,7 @@ import by.step.model.Subject;
 
 import java.util.List;
 
+
 public interface AcademicService {
 
     void addStudent(Student student);
