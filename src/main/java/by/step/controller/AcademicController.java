@@ -4,16 +4,20 @@ import by.step.model.Grade;
 import by.step.model.Student;
 import by.step.model.Subject;
 import by.step.service.AcademicService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+@Component
 public class AcademicController {
 
     private final AcademicService academicService;
     private Scanner scanner;
 
+    @Autowired
     public AcademicController(AcademicService academicService) {
         this.academicService = academicService;
         this.scanner = new Scanner(System.in);

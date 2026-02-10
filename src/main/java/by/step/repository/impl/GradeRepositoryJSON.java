@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,10 +19,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-
+@Repository
 public class GradeRepositoryJSON implements GradeRepository {
 
     @Setter
+    @Value("#{'${data.files}'.split(',')[1]}")
     private String data;
 
     @Setter

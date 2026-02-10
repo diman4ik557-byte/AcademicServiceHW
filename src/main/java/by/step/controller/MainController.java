@@ -2,10 +2,13 @@ package by.step.controller;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
 
+@Component
 public class MainController {
 
     @Getter
@@ -13,7 +16,7 @@ public class MainController {
     private AcademicController academicController;
     private Scanner scanner;
 
-
+    @Autowired
     public MainController(AcademicController academicController) {
         this.academicController = academicController;
         this.scanner = new Scanner(System.in);
@@ -36,7 +39,7 @@ public class MainController {
 
             switch (choice) {
                 case "1" -> academicController.start();
-                case "2","0" -> {
+                case "2", "0" -> {
                     running = false;
                     System.out.println("Выход из программы...");
                 }
