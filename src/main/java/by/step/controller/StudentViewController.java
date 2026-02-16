@@ -21,10 +21,18 @@ public class StudentViewController {
     @GetMapping
     public String getAllStudents(Model model) {
         List<Student> students = academicService.getAllStudents();
+
+        // ОТЛАДКА
+        System.out.println("========== StudentViewController ==========");
+        System.out.println("Получено студентов: " + students.size());
+        for (Student s : students) {
+            System.out.println("  - " + s.getId() + ": " + s.getName() + " (" + s.getEmail() + ")");
+        }
+        System.out.println("===========================================");
+
         model.addAttribute("students", students);
         return "students/list";
     }
-
     @GetMapping("/{id}")
     public String getStudentById(@PathVariable int id, Model model) {
         Student student = academicService.findStudentById(id);

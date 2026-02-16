@@ -7,17 +7,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import jakarta.annotation.PostConstruct;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Repository
 public class GradeRepositoryJSON implements GradeRepository {
@@ -26,19 +25,37 @@ public class GradeRepositoryJSON implements GradeRepository {
     @Value("#{'${data.files}'.split(',')[1]}")
     private String data;
 
+    private String dataPath;
+
     @Setter
     private SimpleDateFormat dF;
+
+    @Autowired
+    public GradeRepositoryJSON(@Value("${app.date.format}") String pattern) {
+        this.dF = new SimpleDateFormat(pattern);
+    }
+
+    @PostConstruct
+    public void init() {
+        this.dataPath = Objects.requireNonNull(
+                Thread.currentThread().getContextClassLoader().getResource(data)
+        ).getPath();
+    }
 
     @Override
     public List<Grade> getAllGrades() {
         try {
-            File file = new File(data);
+            File file = new File(dataPath);  // используем dataPath
+
             if (!file.exists()){
-                newMapper().writeValue(file,Collections.emptyList());
+                System.out.println("файл не найден, создан пустой файл");
+                newMapper().writeValue(file, Collections.emptyList());
                 return new ArrayList<>();
             }
-            return newMapper().readValue(file,
-                    new TypeReference<List<Grade>>() {});
+
+            List<Grade> grades = newMapper().readValue(file, new TypeReference<List<Grade>>() {});
+            System.out.println("Прочитано оценок: " + grades.size());
+            return grades;
         } catch (IOException e){
             throw new RuntimeException("Ошибка при чтении оценок", e);
         }
@@ -101,9 +118,9 @@ public class GradeRepositoryJSON implements GradeRepository {
     }
 
 
-    private void rewriteData(List<Grade> gradles) {
+    private void rewriteData(List<Grade> grades) {
         try {
-            newMapper().writeValue(new File(data), gradles);
+            newMapper().writeValue(new File(data), grades);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

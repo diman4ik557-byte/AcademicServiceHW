@@ -36,8 +36,10 @@ public class AcademicServiceImpl implements AcademicService {
 
     @Override
     public List<Student> getAllStudents() {
-        return studentRepository.getAllStudents();
-
+        List<Student> students = studentRepository.getAllStudents();
+        System.out.println("=== AcademicServiceImpl.getAllStudents() ===");
+        System.out.println("Из репозитория получено: " + students.size());
+        return students;
     }
 
     @Override
