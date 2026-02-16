@@ -97,8 +97,8 @@
     <div th:if="${students == null or students.empty}" style="color: red; margin-top: 20px;">
         Список студентов пуст или не загрузился
     </div>
-    <div th:unless="${students == null or students.empty}" style="color: green; margin-top: 20px;">
-        Загружено студентов: <span th:text="${students.size()}"></span>
+    <div th:unless="${students == null or #lists.isEmpty(students)}" style="color: green; margin-top: 20px;">
+        Загружено студентов: <span th:text="${#lists.size(students)}"></span>
     </div>
 </div>
 </body>
