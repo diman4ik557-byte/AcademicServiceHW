@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Просмотр студента</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .info {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .info p {
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .btn-danger {
+            background-color: #f44336;
+        }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+         }
+
+        .btn-delete:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="'Студент: ' + ${student.name}">Студент</h1>
+
+    <a href="/students" class="btn">← Назад к списку</a>
+
+    <div class="info">
+        <p><strong>ID:</strong> <span th:text="${student.id}">1</span></p>
+        <p><strong>Имя:</strong> <span th:text="${student.name}">Студент Тестовый</span></p>
+        <p><strong>Email:</strong> <span th:text="${student.email}">email@example.com</span></p>
+    </div>
+
+    <h2>Оценки</h2>
+
+    <table th:if="${not #lists.isEmpty(grades)}">
+        <thead>
+        <tr>
+            <th>Предмет</th>
+            <th>Оценка</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="grade, iterStat : ${grades}">
+            <td th:text="${grade.subject}">MATH</td>
+            <td th:text="${grade.score}">5</td>
+            <td>
+                <a th:href="@{/grades/delete/{studentId}/{gradeIndex}(studentId=${student.id}, gradeIndex=${iterStat.index})}"
+                   class="btn btn-delete"
+                   onclick="return confirm('Удалить оценку?')">Удалить</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(grades)}">У студента пока нет оценок</p>
+
+    <a th:href="@{/grades/student/{id}/add(id=${student.id})}" class="btn">Добавить оценку</a>
+</div>
+</body>
+</html>

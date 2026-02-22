@@ -6,17 +6,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import jakarta.annotation.PostConstruct;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Repository
 public class StudentRepositoryJSON implements StudentRepository {
@@ -25,12 +24,27 @@ public class StudentRepositoryJSON implements StudentRepository {
     @Value("#{'${data.files}'.split(',')[0]}")
     private String data;
 
+    private String dataPath;
+
     @Setter
     private SimpleDateFormat dF;
 
+    @Autowired
+    public StudentRepositoryJSON(@Value("${app.date.format}") String pattern) {
+        this.dF = new SimpleDateFormat(pattern);
+    }
+
+    @PostConstruct
+    public void init() {
+        this.dataPath = Objects.requireNonNull(
+                Thread.currentThread().getContextClassLoader().getResource(data)
+        ).getPath();
+    }
+
+
     private void rewriteData(List<Student> students){
         try {
-            newMapper().writeValue(new File(data),students);
+            newMapper().writeValue(new File(dataPath), students);
         } catch (IOException e){
             throw new RuntimeException("Ошибка при записи информации студента", e);
         }
@@ -38,15 +52,19 @@ public class StudentRepositoryJSON implements StudentRepository {
 
     @Override
     public List<Student> getAllStudents() {
-        List<Student> students = new ArrayList<>();
         try {
-            students = newMapper().readValue(new File(data),
-                    new TypeReference<List<Student>>() {
-                    });
-        }catch (IOException e){
-            rewriteData(Collections.emptyList());
+            File file = new File(dataPath);
+            if (!file.exists()) {
+                System.out.println("файл не найден");
+                return new ArrayList<>();
+            }
+            List<Student> students = newMapper().readValue(file, new TypeReference<List<Student>>() {});
+            System.out.println("Прочитано студентов: " + students.size());
+            return students;
         }
-        return students;
+        catch (IOException e) {
+            return new ArrayList<>();
+        }
     }
 
     @Override
